@@ -1,8 +1,8 @@
 # 📊 Prompt Evaluation: V1 vs V2 Sentiment Benchmark
 
-This project compares how different prompt designs affect LLM performance on the same sentiment classification task.
+This project compares how different prompt designs affect LLM performance on the same sentiment classification task, measuring accuracy, latency, and token usage.
 
-The goal is to evaluate **prompt engineering impact**, not model differences.
+The goal is to isolate the effect of **prompt engineering**, not model or dataset changes.
 
 ---
 
@@ -87,12 +87,6 @@ For each input:
 3. Response is normalized
 4. Compared with expected label
 
-Evaluation function:
-
-isCorrect(response, expected)
-
-Matching is based on normalized string comparison.
-
 
 ---
 
@@ -119,16 +113,24 @@ Matching is based on normalized string comparison.
 # 📊 Results
 
 ### 📊 Final Results
-Prompt V1 Accuracy: 100%  
-Prompt V2 Accuracy: 100%
+Prompt V1 Accuracy: 30%  
+Prompt V2 Accuracy: 96.67%
+
+### ⚡ Performance Metrics
+
+| Metrics | V1 | V2 |
+|----------|----------|----------|
+| Average Latency | 1296 ms | 853 ms |
+| Total Tokens | 1376 | 1623 |
 
 ---
 
 # 🧠 Analysis
 
-Despite differences in prompt design:
+- V2 is significantly faster (~34% lower latency)
+- V2 uses slightly more tokens (+247 total)
+- V2 achieves much higher accuracy (96.67% vs 30%)
 
-- Both V1 and V2 achieved 100% accuracy
 
 Interpretation:
 
@@ -141,13 +143,12 @@ Interpretation:
 
 # 💡 Key Insight
 
-LLM performance on simple classification tasks quickly reaches saturation.
+Prompt structure strongly affects both:
+- performance consistency
+- response speed
+- token usage efficiency
 
-Prompt differences only become meaningful when:
-
-- inputs are ambiguous
-- sentiment is mixed or sarcastic
-- instructions conflict or are noisy
+Better-structured prompts reduce ambiguity and improve overall system efficiency.
 
 ---
 
