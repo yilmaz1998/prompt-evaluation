@@ -5,6 +5,8 @@ import { isCorrect } from "./evaluator.js";
 
 async function runEvaluation(version: "v1" | "v2") {
     let correct = 0;
+    let totalLatency = 0;
+    let totalTokens = 0;
 
     console.log(`\n🚀 Running: ${version}`);
 
@@ -14,19 +16,35 @@ async function runEvaluation(version: "v1" | "v2") {
         const prompt = prompts[version](item.input);
         console.log(`📝 prompt created`);
 
-        const response = await runGPT(prompt);
-        console.log(`🧠 response received, response: ${response}`);
+        const startTime = Date.now();
 
-        const result = isCorrect(response, item.expected);
+        const response = await runGPT(prompt);
+        
+        const latency = Date.now() - startTime;
+        totalLatency += latency;
+
+        console.log(`🧠 response received, response: ${response.text}`);
+
+        totalTokens += response.usage?.total_tokens || 0;
+
+        const result = isCorrect(response.text, item.expected);
         console.log(`🎯 expected: ${item.expected} | result: ${result}\n`);
 
         if (result) correct++;
     }
 
     const accuracy = (correct / dataset.length) * 100;
-    console.log(`✅ ${version} accuracy: ${accuracy.toFixed(2)}%`);
+    const avgLatency = totalLatency / dataset.length;
 
-    return accuracy;
+    console.log(`✅ ${version} accuracy: ${accuracy.toFixed(2)}%`);
+    console.log(`⏱️ ${version} average latency: ${avgLatency.toFixed(2)} ms`);
+    console.log(`🔢 ${version} average tokens: ${(totalTokens / dataset.length).toFixed(2)}`);
+
+    return {
+        accuracy: `${accuracy.toFixed(2)}%`,
+        avgLatency: `${avgLatency.toFixed(0)} ms`,
+        totalTokens: `${totalTokens} tokens`,
+      };
 }
 
 async function compare() {

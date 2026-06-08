@@ -15,7 +15,10 @@ export async function runGPT(prompt: string) {
       temperature: 0,
     });
     
-    return response.output_text;
+    return {
+      text: response.output_text,
+      usage: response.usage,
+    };
   } catch (error) {
     console.error('Error calling OpenAI API:', error);
     throw error;
